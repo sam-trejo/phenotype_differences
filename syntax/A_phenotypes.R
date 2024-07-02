@@ -9,17 +9,18 @@
 # 7. Check sample output .csv and let me know if it looks good
 ################################################################################
 
-install.packages("tidyverse")
+# install.packages("tidyverse")
+# install.packages("estimatr")
 
 library(haven)
 library(dplyr)
 library(tidyr)
-library(estimatr)
+library()
 
-setwd('C:/Users/trejo/Dropbox (Princeton)/shared/phen_diff/data/wls')
+# setwd('..')
 
 # idpub + rytpe or familypub+personid uniquely identify
-d <- read_dta('wls_public_long.dta') |>
+d <- read_dta('./data/wls/wls_bl_14.03.stata/wls_bl_14_03.dta') |>
   mutate(id = paste0(as.character(familypub), '-', as.character(personid))) |> 
   mutate(female = case_when(z_sexrsp == 1 ~ 0,
                             z_sexrsp == 2 ~ 1,
@@ -93,7 +94,7 @@ height <- select(height, id, height)
 # cognitive performance (1957-1964 graduates)
 
 cognitive_performance <- d |>
-  mutate(iq = if_else(rtype == 'g', as.numeric(gwiiq_bm), as.numeric(swiiq_t))) |>
+  mutate(iq = as.numeric(z_gwiiq_bm)) |>
   mutate(cognitive_performance = if_else(iq >=0, iq, NA_real_)) |>
   select(id, cognitive_performance) |>
   left_join(resid_controls, by='id') |>
@@ -1150,4 +1151,4 @@ out <- id |>
   full_join(risk_tolerance, by='id') |>
   full_join(subjective_well_being, by='id')
 
-write.csv(out, 'C:/Users/trejo/Dropbox (Princeton)/shared/phen_diff/data/clean/wls_phenotypes.csv')
+write.csv(out, './data/clean/wls_phenotypes.csv')

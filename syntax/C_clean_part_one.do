@@ -7,7 +7,7 @@ Goal: This code creates a clean WLS data file for phenotype differences analysis
 ***********************************************************************************
 
 ***load main wls data
-use "${data}\wls\wls_bl_14_03.dta", clear
+use "${data}\wls\wls_bl_14.03.stata\wls_bl_14_03.dta", clear
 
 ***********************************************************************************
 *** MERGE ON AUXILLARY DATA
@@ -16,7 +16,7 @@ use "${data}\wls\wls_bl_14_03.dta", clear
 capture drop _merge
 
 ***merge on pgi repo
-merge m:1 idpub rtype using "${data}\wls\PGIrepo_v1.1_idpub_shuffled.dta", keep(1 3) nogenerate
+merge m:1 idpub rtype using "${data}\pgi\PGIrepo_idpub_v1.1\PGIrepo_v1.1_idpub_shuffled.dta", keep(1 3) nogenerate
 
 ***merge on Klint's phenotype data
 merge 1:1 idpub rtype personid using "${data}\clean\wls_phenotypes.dta", keep(3) nogenerate

@@ -131,11 +131,11 @@ global fig1C_reps = 10 // 1000
 
 *** pgi phenotypes we observe in WLS
 global stub ///
-	   pgi_aer pgi_alcoh pgi_asthma pgi_birth pgi_bmi ///
-	   pgi_cig_day pgi_cog pgi_copd pgi_dep pgi_drinks ///
-	   pgi_edu pgi_ever_smk pgi_extra pgi_health pgi_hgt ///
-	   pgi_lonely pgi_neuro pgi_open pgi_phys_act pgi_relig ///
-	   pgi_sat_fam pgi_sat_fin pgi_sat_job pgi_swb
+	   aer alcoh asthma birth bmi ///
+	   cig_day cog copd dep drinks ///
+	   edu ever_smk extra health hgt ///
+	   lonely neuro open phys_act relig ///
+	   sat_fam sat_fin sat_job swb
 	   /// neb_male neb_fem menses [SEX SPECIFIC]
 	   /// pollen risk [NO SIGNIFICANT BETWEEN-FAMILY PREDICTION]
 	    // hay dust cat [2X GENOTYPE SAMPLE HAS N<300]
@@ -193,5 +193,5 @@ do "$syntax\Z_tabS-alive75.do"
 do "$syntax\Z_tabS-rho.do"
 
 *** SD Test Supplementary Table
-do "$syntax\Z-tabS-sd.do"
+do "$syntax\Z_tabS-sd.do"
 

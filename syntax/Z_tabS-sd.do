@@ -5,8 +5,7 @@
 
 use "${analytic}", clear
 
- robvar meta_pgi_alive75 if dna, by(dead)
- robvar meta_pgi_span if dna, by(dead) 
+ robvar pgi_meta if dna, by(dead)
  
  local i=0
 foreach var of global stub2 {
@@ -28,6 +27,7 @@ keep if dna_sib==0
 *** SD RATIO PROGRAM
 ***********************************************************************************
 
+program drop _all
 program define sd_ratio, rclass
 	args v1 v2
 	confirm variable `v1'
@@ -120,7 +120,7 @@ restore
 *** 
 ***********************************************************************************	
 		
-esttab using "{$tables}_", /// "${table}\var_test_${date}.tex",
+esttab using "${table}\tabS-sd_${date}.tex", ///
 			 cells("mean(fmt(a2))") ///
 			 noobs nonumber nodepvar label replace booktabs fragment ///
 			 collabels(none) ///
