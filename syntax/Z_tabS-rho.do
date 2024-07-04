@@ -96,4 +96,4 @@ replace pheno = "Self-Rated Health" if pheno=="health"
 replace pheno = "Self-Rated Math Ability" if pheno=="self_math"
 replace pheno = "Subjective Well-Being" if pheno=="swb"
 
-export excel using "${table}\tabS-row_${date}.xls", firstrow(varlabels) replace
+export excel using "${table}\tabS-row_${date}.xlsx", firstrow(varlabels) replace
