@@ -1,26 +1,30 @@
 
 ***********************************************************************************
-*** 
+*** RUN ELASTIC NET TO GET LIFESPAN META-PGI WEIGHTS
 ***********************************************************************************
 
 use "${analytic_temp}", clear
 
 if "${enet}"=="YES" {
 	preserve
+		***remove polygenic scores not used in the mortality analyses
 		drop pgi_menses pgi_neb_male pgi_neb_fem pgi_deep ///
 			 pgi_adhd pgi_pollen pgi_risk
-			
+		
+		***restrict to one sibling in each family (either genotyped or older)
 		drop if dna==0		
 		egen mn_born = mean(born), by(idpub)		
 		drop if born>mn_born		
 		codebook idpub		
-			
+		
+		***run elastic net
 		quietly elasticnet linear imp_span (female c_born c_born2 female_c_born female_c_born2 pc*) pgi*, ///
 						   alpha(0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1) ///
 						   rseed(19146) crossgrid(union) alllambdas  
 		display "`e(alpha_sel)'"						   
 	restore
-
+	
+	***rescale selected betas to sum to one in absolute value
 	matselrc e(b) beta, r(1) c(`e(othervars_sel)')
 	matewmf beta abs_beta, f(abs)
 	mata : st_matrix("tot_abs_beta", rowsum(st_matrix("abs_beta")))
@@ -36,7 +40,7 @@ if "${enet}"=="YES" {
 }
 
 ***********************************************************************************
-*** 
+*** GENERATE META-PGI VARIABLE
 ***********************************************************************************
 
 gen pgi_meta =  -.25*pgi_bmi      +  .11*pgi_edu    + -.11*pgi_ever_smk + /// 

@@ -155,11 +155,11 @@ gen high = b + 1.96*se
 gen low = b - 1.96*se
 gen n = _n
 
+***Label Phenotypes
 replace pheno = "Adventurousness" if pheno=="pgi_adv"
 replace pheno = "Age at First Birth" if pheno=="pgi_birth"
 replace pheno = "Allergy: Cat" if pheno=="pgi_cat"
 replace pheno = "Allergy: Dust" if pheno=="pgi_dust"
-*replace pheno = "Allergy: Pollen" if pheno=="pgi_pollen"
 replace pheno = "Asthma/Eczema/Rhini." if pheno=="pgi_aer"
 replace pheno = "Asthma" if pheno=="pgi_asthma" 
 replace pheno = "Alcohol Misuse" if pheno=="pgi_alcoh"
@@ -193,7 +193,6 @@ replace pheno = "Neuroticism" if pheno=="pgi_neuro"
 replace pheno = "Openness" if pheno=="pgi_open" 
 replace pheno = "Physical Activity" if pheno=="pgi_phys_act"
 replace pheno = "Religious Attend." if pheno=="pgi_relig"
-*replace pheno = "Risk Tolerance" if pheno=="pgi_risk"
 replace pheno = "{bf:Self-Rated Health}" if pheno=="pgi_health"
 replace pheno = "Self-Rated Math Abil." if pheno=="pgi_self_math"
 replace pheno = "Subjective Well-Being" if pheno=="pgi_swb"
@@ -238,12 +237,12 @@ twoway rcap high low n if qval<.1, ///
 		xtitle("Lifespan (Years)", size(medlarge)) ///
 		ytitle("") ///
 		legend(off) ///
-		title("{bf:C.} The Effect of PGIs on Lifespan", position(12) size(large)) ///		
+		title("{bf:C.} Effects of Polygenic Scores on Lifespan", position(12) size(large)) ///		
 		graphregion(margin(0 0 2 2)) ///
 		saving("${figure}\temp\lifespan", replace)
 		
 ***********************************************************************************
-*** 
+*** COMBINE PANELS A AND B, and then add PANEL C on the right
 ***********************************************************************************
 
 graph combine ///
@@ -259,18 +258,17 @@ graph combine ///
 	  graphregion(margin(zero))	
 		
 graph export "${figure}\fig2_${date}.tif", replace height(2700) width(3300)
-
 		
 ***********************************************************************************
-*** 
+*** EXPORT BETA ESTIMATES FOR SI
 ***********************************************************************************
 
 label var pheno "Polygenic Score"
 label var b "β Estimate (Outcome: Lifespan)"
 label var se "Standard Error"
 label var pval "p-Value"
-label var qval "q-Value (including meta-PGI)"
-label var qval2 "q-Value (excluding meta-PGI)"
+label var qval "q-Value (including meta-PGS)"
+label var qval2 "q-Value (excluding meta-PGS)"
 label var b_mec "Disattenuated β Estimate "
 
 replace pheno = "Asthma/Eczema/Rhinitis" if pheno=="Asthma/Eczema/Rhini."

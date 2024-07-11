@@ -16,7 +16,7 @@ use "${data}\wls\wls_bl_14.03.stata\wls_bl_14_03.dta", clear
 capture drop _merge
 
 ***merge on pgi repo
-merge m:1 idpub rtype using "${data}\pgi\PGIrepo_idpub_v1.1\PGIrepo_v1.1_idpub_shuffled.dta", keep(1 3) nogenerate
+merge m:1 idpub rtype using "${data}\pgs\PGIrepo_idpub_v1.1\PGIrepo_v1.1_idpub_shuffled.dta", keep(1 3) nogenerate
 
 ***merge on Klint's phenotype data
 merge 1:1 idpub rtype personid using "${data}\clean\wls_phenotypes.dta", keep(3) nogenerate
@@ -97,6 +97,7 @@ egen count=count(individ), by(idpub)
 keep if count==2
 drop count
 
+******create indicator for sibling pairs that are both genotyped
 egen total=total(dna), by(idpub)
 tab total
 keep if inlist(total,1,2)
@@ -104,6 +105,7 @@ gen dna_sib = 0
 replace dna_sib = 1 if total==2
 drop total
 
+***create indicator for sibling pairs that have experiencd at least one death
 egen sib_tot_dead = total(dead), by(idpub)
 gen sib_died = 0
 replace sib_died = 1 if inlist(sib_tot_dead,1,2)

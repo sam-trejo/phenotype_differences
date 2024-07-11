@@ -2,7 +2,7 @@
 do "${syntax}\programs\bky2006.do"
 
 ***********************************************************************************
-***
+***EXPORT ESTIMATED RHO FOR THE APPENDIX
 ***********************************************************************************
 
 ***
@@ -20,6 +20,7 @@ drop id
 
 rename *_ *
 
+***generate pval
 gen pval = (2 * ttail(2105), abs(((rho_pgi) - .5)/se_rho_pgi))
 
 format rho_pgi se_rho_pgi pval %04.3f	
@@ -31,15 +32,18 @@ tempfile meta
 save `meta', replace
 use `hold', clear
 
+***generate qval (without meta polygenic score)
 drop if pheno=="meta"
 bky2006	
 rename qval qval2
 
+***generate qval (with meta polygenic score)
 append using `meta'
 bky2006
 
 order pheno rho se_rho pval qval qval2
 
+***label columns
 label var pheno "Polygenic Score"
 label var rho_pgi "ρ(g1j,g2j)"
 label var se_rho_pgi "Standard Error"
@@ -47,6 +51,7 @@ label var pval "p-Value"
 label var qval "q-Value (including meta-PGI)"
 label var qval2 "q-Value (excluding meta-PGI)"
 
+***label rows
 replace pheno = "Adventurousness" if pheno=="adv"
 replace pheno = "Age at First Birth" if pheno=="birth"
 replace pheno = "Age at First Menses" if pheno=="menses"

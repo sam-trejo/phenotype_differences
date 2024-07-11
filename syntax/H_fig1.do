@@ -153,6 +153,7 @@ preserve
 						if dna_sib==1, absorb(idpub)
 		local b_fe = _b[pgi_`var']
 		local se_fe = _se[pgi_`var']
+		local m_2g =  `e(N)'/2
 		
 		quietly sum rho_pgi_`var'
 		local rho = `r(mean)'		
@@ -164,16 +165,17 @@ preserve
 		local b_pd = _b[x5_pgi_`var']
 		local adj = `b_pd'^2 * (1+`rho') / (1-`rho') / (2105)
 		local se_pd = (_se[x5_pgi_`var']^2 + `adj')^.5
+		local n_1g =  `e(N)'
 		
-		mat betas = nullmat(betas) \ `b_fe', `se_fe', `b_pd', `se_pd'
+		mat betas = nullmat(betas) \ `b_fe', `se_fe', `b_pd', `se_pd', `m_2g', `n_1g'
 	}			
 
 	mat rownames betas = $rowname			
-	mat colnames betas = "b_fe" "se_fe" "b_pd" "se_pd"
+	mat colnames betas = "b_fe" "se_fe" "b_pd" "se_pd" "m_2g" "n_1g"
 
 	svmat2 betas, names(col) rnames(pheno) 
 
-	keep b_fe se_fe b_pd se_pd pheno
+	keep b_fe se_fe b_pd se_pd m_2g n_1g pheno 
 	keep if pheno!=""
 	
 	gen b_fe_ci_hi = b_fe + 1.96*se_fe
@@ -206,6 +208,7 @@ preserve
 
 	format b_pd b_fe %02.1f	
 	
+	***create scatterplot
 	twoway scatter b_pd b_fe, ///
 					mlcolor(ebblue%63) ///
 					mlwidth(medium) ///   
@@ -240,7 +243,7 @@ preserve
 		   text(-.1 .5 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///
 		   saving("${figure}\temp\scatter_no_overlap", replace)			
 		   
-	keep pheno b_pd se_pd
+	keep pheno b_pd se_pd m_2g n_1g
 	rename *pd *pd_PANELC		   
 	tempfile hold2
 	save `hold2', replace
@@ -348,7 +351,7 @@ local hi = .7/`slope'
 
 format b_pd b_fe %02.1f
 
-***
+***create scatterplot
 twoway scatter b_pd b_fe, ///
 				mlcolor(ebblue%63) ///
 				mlwidth(medium) ///   
@@ -382,9 +385,7 @@ twoway scatter b_pd b_fe, ///
 	   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="bmi", color(ebblue%32) ///				
 	   text(-.1 .5 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///			
 	   saving("${figure}\temp\scatter_drop_sibling1000", replace) 	   
-	   
-*save "V:\hauser\users\wlsgwas\sam\phen_diff\drop_sibling_1000_reps_${date}.dta", replace
-	   
+	   	   
 ***********************************************************************************
 *** COMBINE SCATTERS 
 ***********************************************************************************	   
@@ -401,15 +402,16 @@ graph combine "${figure}\temp\scatter_drop_sibling1000.gph" ///
 graph export "${figure}\fig1_${date}.tif", replace width(3300) height(2700)
 
 ***********************************************************************************
-*** COMBINE SCATTERS 
+*** EXPORT SCATTER DATA FOR SI
 ***********************************************************************************	   
 
-keep pheno b_fe se_fe b_pd se_pd
+keep pheno b_fe se_fe b_pd se_pd 
 rename *pd *pd_PANELA
 
 merge 1:1 pheno using `hold1', keep(3) nogenerate
 merge 1:1 pheno using `hold2', keep(3) nogenerate
 
+***label columns
 label var pheno "Phenotype"
 label var b_fe "Fixed Effects β Estimate"
 label var se_fe "Fixed Effects Standard Error"
@@ -419,7 +421,10 @@ label var b_pd_PANELB "Phenotype Differences β Estimate (Panel B)"
 label var se_pd_PANELB "Phenotype Differences Standard Error (Panel B)"
 label var b_pd_PANELC "Phenotype Differences β Estimate (Panel C)"
 label var se_pd_PANELC "Phenotype Differences Standard Error (Panel C)"
+label var m_2g "Two Genotypes Sample Size (M Sibling Pairs)"
+label var n_1g "One Genotype Sample Size (N Sibling Pairs)"
 
+***label rows
 replace pheno = "Adventurousness" if pheno=="adv"
 replace pheno = "Age at First Birth" if pheno=="birth"
 replace pheno = "Age at First Menses" if pheno=="menses"

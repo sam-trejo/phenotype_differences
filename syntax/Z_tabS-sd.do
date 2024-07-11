@@ -1,6 +1,6 @@
  
 ***********************************************************************************
-*** PREP DATA
+*** SD TESTS ON GENOTYPED SAMPLE WHO ARE DEAD/ALIVE by 2020
 ***********************************************************************************
 
 use "${analytic}", clear
@@ -16,16 +16,27 @@ foreach var of global stub2 {
  
 
 ***********************************************************************************
-*** PREP DATA
+*** PREP DATA TO EXPORT PHENOTYPIC SD TEST FOR TABLE IN SI
 ***********************************************************************************
+
+estimates clear 
+
+***
+keep if dna_sib==0
 
 ***
 global vars out_bmi out_hgt out_cog out_edu out_extra out_neuro out_open
-keep if dna_sib==0
+
+foreach var of global vars {
+	egen count = count(`var'), by(idpub)	
+	replace `var' = . if count!=2
+	drop count
+}
 
 ***********************************************************************************
 *** SD RATIO PROGRAM
 ***********************************************************************************
+
 
 program drop _all
 program define sd_ratio, rclass
@@ -44,7 +55,7 @@ program define sd_ratio, rclass
 end
 
 ***********************************************************************************
-*** COLUMNS 1 & 2
+*** COLUMNS 1 
 ***********************************************************************************
 
 preserve
@@ -58,18 +69,8 @@ preserve
 	eststo: estpost sum	$vars
 restore
 
-***
-preserve
-	keep if dna==0
-	foreach var of varlist $vars {
-		sum `var'
-		replace `var' = `r(N)'
-	}
-	eststo: estpost sum	$vars
-restore
-
 ***********************************************************************************
-*** COLUMNS 3 & 4
+*** COLUMNS 2 & 3
 ***********************************************************************************
 
 preserve
@@ -92,7 +93,7 @@ preserve
 restore
 
 ***********************************************************************************
-*** COLUMN 5
+*** COLUMN 4
 ***********************************************************************************
 
 preserve
@@ -104,7 +105,7 @@ preserve
 restore
 
 ***********************************************************************************
-*** COLUMN 6
+*** COLUMN 5
 ***********************************************************************************
 
 preserve
@@ -124,5 +125,5 @@ esttab using "${table}\tabS-sd_${date}.tex", ///
 			 cells("mean(fmt(a2))") ///
 			 noobs nonumber nodepvar label replace booktabs fragment ///
 			 collabels(none) ///
-			 mlabels("$Var_1$" "$N_1$" "$Var_2$" "$N_2$" "$\frac{Var_2}{Var_1}$" " ") ///
-			 mgroups("\textbf{Not Genotyped}" "\textbf{Genotyped}" "\textbf{Ratio}" "\textbf{\textit{p}-value}", pattern(1 0 1 0 1 1) span prefix(\multicolumn{@span}{c}{) suffix(}))
+			 mlabels("$var(y_{2j})$" "$var(y_{1j})$" "$N$ Sibling Pairs" "$\frac{var(y_{2j})}{var(y_{1j})}$" "\textit{p}-value")
+			 

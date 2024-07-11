@@ -53,42 +53,6 @@ global comma = substr("$comma", 1, length("${comma}")-2)
 display "$comma"
 
 ***********************************************************************************
-*** SEPERATE PHENOTYPE NAMES INTO EIGHT ROWS OF SIX
-***********************************************************************************
-
-forvalues i=1(6)48 {
-	
-	local i6 = `i' + 5
-	local ilead = string(`i',"%02.0f")
-   	local i6lead = string(`i6',"%02.0f")
-
-	display `ilead'
-	
-	***create sublist of variable names
-
-	global pgi_name`i' ""
-	global comma`i' ""
-	
-	foreach var of varlist pgi`ilead'_ - pgi`i6lead'_ {
-		
-		display "`var'"
-		
-		local lbl : var label `var'
-		display "`lbl'" 
-
-		global pgi_name`i' "${pgi_name`i'} `lbl'"
-		global comma`i' "${comma`i'} `lbl',"
-
-	}
-
-	global comma`i' = substr("${comma`i'}", 1, length("${comma`i'}")-2)
-	display "${comma`i'}"
-}
-
-global comma43 = substr("${comma43}", 1, length("${comma43}")-4)
-display "${comma43}"
-
-***********************************************************************************
 *** RESHAPE WIDE SO EACH ROW IS A SIBLING PAIR
 ***********************************************************************************
 
@@ -147,26 +111,15 @@ forvalues i=1/48 {
 	mat out = nullmat(out), corr[1,2*`i'-1], corr[1,2*`i']^.5
 }
 
-***make 8 matrices, each with 6 pgi
-forvalues i=1(12)96 {
-	
-	local i12 = `i' + 11
-	local ix5 = (`i' - 1) / 2 + 1
-    
-	***create submmatrix of correlations
-	matselrc out out`ix5', col(`i'/`i12')
-}
-
 ***********************************************************************************
 *** EXPORT CORRELATION DATA
 ***********************************************************************************
 
 use `hold', clear
 
-***
+***convert rhos from matrix to variables
 svmat corr
 
-***
 foreach var of varlist corr* {
 	sum `var'
 	replace `var' = `r(mean)' if `var'==.
@@ -175,11 +128,10 @@ foreach var of varlist corr* {
 local i=0
 foreach var of varlist pgi* {
 	
-	***
+	***reattach phenotype names 
 	local i = `i' + 1
 	rename corr`i' rho_`var'
 	
-	***
 	local i = `i' + 1
 	rename corr`i' var_rho_`var'
 	gen se_rho_`var' = var_rho_`var'^.5

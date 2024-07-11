@@ -2,7 +2,7 @@
 do "${syntax}\programs\bky2006.do"
 	
 ***********************************************************************************
-*** PANEL A 
+*** REPLICATE FIG2 PANEL C FOR DICHOTOMOUS SURVIVE TO 75 OUTCOME FOR SI
 ***********************************************************************************
 
 *** LOAD WLS DATA
@@ -180,10 +180,10 @@ twoway rcap high low n if qval<.1, ///
 	    yscale(lstyle(none)) ///
 		xlabel(-.03(.02).03, labsize(medsmall)) ///
 		ylabel(, nolabels noticks) ///
-		xtitle("Lifespan (Years)", size(medlarge)) ///
+		xtitle("Probability of Survival to Age 75", size(medlarge)) ///
 		ytitle("") ///
 		legend(off) ///
-		title("The Effect of PGIs on Survival to Age 75", position(12) size(large)) ///		
+		title("Effects of Polygenic Scores" "on Premature Mortality", position(12) size(large)) ///		
 		graphregion(margin(0 0 2 2))
 		
 graph export "${figure}\figS-lifespan_${date}.tif", replace height(3000) width(2400)
@@ -196,8 +196,8 @@ label var pheno "Polygenic Score"
 label var b "β Estimate (Outcome: Survive to Age 75)"
 label var se "Standard Error"
 label var pval "p-Value"
-label var qval "q-Value (including meta-PGI)"
-label var qval2 "q-Value (excluding meta-PGI)"
+label var qval "q-Value (including meta-PGS)"
+label var qval2 "q-Value (excluding meta-PGS)"
 label var b_mec "Disattenuated β Estimate "
 
 replace pheno = "Chronic Obstructive Pulmonary Disease" if pheno=="Chronic Obstructive Pulmonar."
