@@ -2,7 +2,7 @@
 *** IMPORT KLINT PHENOTYPE DATA
 ***********************************************************************************
 
-import delimited "${data}\clean\wls_phenotypes.csv", clear stringcols(_all) 
+import delimited "${data}/clean/wls_phenotypes.csv", clear stringcols(_all) 
 
 gen neb_male = number_ever_born if female=="0"
 
@@ -67,5 +67,5 @@ destring idpub familypub personid out_bmi-out_neb_fem, force replace
 
 replace out_sat_job = -1 * out_sat_job
 
-save "${data}\clean\wls_phenotypes.dta", replace
+save "${data}/clean/wls_phenotypes.dta", replace
 

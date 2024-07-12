@@ -1,5 +1,5 @@
 
-do "${syntax}\programs\bky2006.do"
+do "${syntax}/programs/bky2006.do"
 	
 ***********************************************************************************
 *** REPLICATE FIG2 PANEL C FOR DICHOTOMOUS SURVIVE TO 75 OUTCOME FOR SI
@@ -87,7 +87,7 @@ order pheno b se pval qval qval2
 sort pval
 
 ***merge on measurement error multipliers
-merge 1:1 pheno using "${data}\me_mult_long_2024_01_05.dta", nogenerate keep(1 3)
+merge 1:1 pheno using "${data}/me_mult_long_2024_01_05.dta", nogenerate keep(1 3)
 
 ***generate disattenuated betas and ses
 gen b_mec = b * me_mult if qval<.1
@@ -186,7 +186,7 @@ twoway rcap high low n if qval<.1, ///
 		title("Effects of Polygenic Scores" "on Premature Mortality", position(12) size(large)) ///		
 		graphregion(margin(0 0 2 2))
 		
-graph export "${figure}\figS-lifespan_${date}.tif", replace height(3000) width(2400)
+graph export "${figure}/figS-lifespan_${date}.tif", replace height(3000) width(2400)
 		
 ***********************************************************************************
 *** 
@@ -206,5 +206,5 @@ keep pheno b se pval qval qval2 b_mec
 order pheno b se pval qval qval2 b_mec
 sort pheno
 
-export excel using "${table}\tabS-alive75_${date}.xlsx", firstrow(varlabels) replace
+export excel using "${table}/tabS-alive75_${date}.xlsx", firstrow(varlabels) replace
 

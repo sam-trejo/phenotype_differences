@@ -96,7 +96,7 @@ replace pgi_neb_male = . if female == 1
 ***********************************************************************************
 
 gen id=1
-merge m:1 id using "${data}\me_mult_wide_2024_01_05.dta", nogenerate
+merge m:1 id using "${data}/me_mult_wide_2024_01_05.dta", nogenerate
 drop id
 
 ***********************************************************************************
@@ -126,4 +126,4 @@ label var dna_sib "Two Genotype Sample"
 *** SAVE OUT DATA
 ***********************************************************************************
 
-save "${data}\clean\analytic_${date}.dta", replace
+save "${data}/clean/analytic_${date}.dta", replace

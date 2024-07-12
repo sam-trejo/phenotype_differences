@@ -26,10 +26,10 @@ set seed 27203
 
 ***set files path gobals
 global phen_diff "`c(pwd)'"
-global data "${phen_diff}\data"
-global syntax "${phen_diff}\syntax"
-global figure "${phen_diff}\figures"
-global table "${phen_diff}\tables"
+global data "${phen_diff}/data"
+global syntax "${phen_diff}/syntax"
+global figure "${phen_diff}/figures"
+global table "${phen_diff}/tables"
 
 ***********************************************************************************
 *** DATE GLOBAL
@@ -101,15 +101,15 @@ dis "$date"
 ***set dataset globals
 
 ***
-global rho "${data}\clean\phen_diff_rho_${date}.dta"
+global rho "${data}/clean/phen_diff_rho_${date}.dta"
 
 ***
-global analytic_temp "${data}\clean\analytic_temp_${date}.dta"
-global analytic_temp_plus_meta "${data}\clean\analytic_temp_plus_meta_${date}.dta"
-global analytic "${data}\clean\analytic_${date}.dta"
+global analytic_temp "${data}/clean/analytic_temp_${date}.dta"
+global analytic_temp_plus_meta "${data}/clean/analytic_temp_plus_meta_${date}.dta"
+global analytic "${data}/clean/analytic_${date}.dta"
 
 ***
-global full "${data}\clean\full_${date}.dta"
+global full "${data}/clean/full_${date}.dta"
 
 ***********************************************************************************
 *** SET REPETITIONS GLOBALS
@@ -160,38 +160,41 @@ global stub2 ///
 global RSCRIPT_PATH ""
 
 *** Clean Phenotype Data
-rscript using "${syntax}\A_phenotypes.R"
+rscript using "${syntax}/A_phenotypes.R"
 
 *** Clean Phenotype Data
-do "${syntax}\B_phenotypes.do"
+do "${syntax}/B_phenotypes.do"
 
 *** Begin Cleaning WLS Data & Auxillary Files
-do "${syntax}\C_clean_part_one.do"
+do "${syntax}/C_clean_part_one.do"
 
 *** Run Elastic Net to Generate Meta-PGI
-do "${syntax}\D_meta_PGI.do"
+do "${syntax}/D_meta_PGI.do"
 
 *** Bootstrap Within Family PGI Correlation
-do "$syntax\E_rho.do"
+do "$syntax/E_rho.do"
 
 *** Clean WLS Data and Merge Auxillary Files
-do "${syntax}\F_clean_part_two.do"
+do "${syntax}/F_clean_part_two.do"
 
 *** Descriptive Statistics Table
-do "${syntax}\G_tab1.do"
+do "${syntax}/G_tab1.do"
 
 *** FE Beta x PD Beta Scatter (Figure 1)
-do "${syntax}\H_fig1.do"
+do "${syntax}/H_fig1.do"
 
 *** PGI on Lifespan (Figure 2)
-do "${syntax}\I_fig2.do"
+do "${syntax}/I_fig2.do"
+
+*** Construct Precision and Bias Figures
+rscript using "${syntax}/J_precision_plots.R"
 
 *** PGI on Survival to 75 Supplementary Figure
-do "$syntax\Z_tabS-alive75.do"
+do "$syntax/Z_tabS-alive75.do"
 
 *** Rho Data to .xlsx
-do "$syntax\Z_tabS-rho.do"
+do "$syntax/Z_tabS-rho.do"
 
 *** SD Test Supplementary Table
-do "$syntax\Z_tabS-sd.do"
+do "$syntax/Z_tabS-sd.do"
 

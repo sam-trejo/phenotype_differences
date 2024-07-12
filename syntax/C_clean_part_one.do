@@ -7,7 +7,7 @@ Goal: This code creates a clean WLS data file for phenotype differences analysis
 ***********************************************************************************
 
 ***load main wls data
-use "${data}\wls\wls_bl_14.03.stata\wls_bl_14_03.dta", clear
+use "${data}/wls/wls_bl_14.03.stata/wls_bl_14_03.dta", clear
 
 ***********************************************************************************
 *** MERGE ON AUXILLARY DATA
@@ -16,10 +16,10 @@ use "${data}\wls\wls_bl_14.03.stata\wls_bl_14_03.dta", clear
 capture drop _merge
 
 ***merge on pgi repo
-merge m:1 idpub rtype using "${data}\pgs\PGIrepo_idpub_v1.1\PGIrepo_v1.1_idpub_shuffled.dta", keep(1 3) nogenerate
+merge m:1 idpub rtype using "${data}/pgs/PGIrepo_idpub_v1.1/PGIrepo_v1.1_idpub_shuffled.dta", keep(1 3) nogenerate
 
 ***merge on Klint's phenotype data
-merge 1:1 idpub rtype personid using "${data}\clean\wls_phenotypes.dta", keep(3) nogenerate
+merge 1:1 idpub rtype personid using "${data}/clean/wls_phenotypes.dta", keep(3) nogenerate
 
 ***********************************************************************************
 *** CLEAN VARIABLES
@@ -82,7 +82,7 @@ foreach var of varlist pgi* {
 ***save out full sample for selection into genotyping
 preserve
 	drop  z_brdxdy - z_q1a203re
-	save "${data}\clean\full_${date}.dta", replace
+	save "${data}/clean/full_${date}.dta", replace
 restore
 
 ***keep only first two people in each family
@@ -205,4 +205,4 @@ rename pgi_voicedeepmulti pgi_deep
 *** 
 ***********************************************************************************
 
-save "${data}\clean\analytic_temp_${date}.dta", replace
+save "${data}/clean/analytic_temp_${date}.dta", replace

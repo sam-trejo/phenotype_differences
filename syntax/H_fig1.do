@@ -125,7 +125,7 @@ preserve
 					|| ///
 		   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="bmi", color(ebblue%32) ///											
 		   text(-.1 .5 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///
-		   saving("${figure}\temp\scatter_drop_sibling", replace)
+		   saving("${figure}/temp/scatter_drop_sibling", replace)
 
 	keep pheno b_pd se_pd
 	rename *pd *pd_PANELB		   
@@ -241,7 +241,7 @@ preserve
 					|| ///
 		   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="bmi", color(ebblue%32) ///						
 		   text(-.1 .5 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///
-		   saving("${figure}\temp\scatter_no_overlap", replace)			
+		   saving("${figure}/temp/scatter_no_overlap", replace)			
 		   
 	keep pheno b_pd se_pd m_2g n_1g
 	rename *pd *pd_PANELC		   
@@ -384,22 +384,22 @@ twoway scatter b_pd b_fe, ///
 				|| ///
 	   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="bmi", color(ebblue%32) ///				
 	   text(-.1 .5 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///			
-	   saving("${figure}\temp\scatter_drop_sibling1000", replace) 	   
+	   saving("${figure}/temp/scatter_drop_sibling1000", replace) 	   
 	   	   
 ***********************************************************************************
 *** COMBINE SCATTERS 
 ***********************************************************************************	   
 
-graph combine "${figure}\temp\scatter_drop_sibling1000.gph" ///	
-			  "${figure}\temp\scatter_drop_sibling.gph" ///	
- 			  "${figure}\temp\scatter_no_overlap.gph", ///	
+graph combine "${figure}/temp/scatter_drop_sibling1000.gph" ///	
+			  "${figure}/temp/scatter_drop_sibling.gph" ///	
+ 			  "${figure}/temp/scatter_no_overlap.gph", ///	
 			  ycommon ///
 			  col(3) ///
 			  l1("Phenotype Differences Estimate             ", size(medlarge)  margin(0 0 0 0) bmargin(0 0 0 0) ) /// margin(zero) bmargin(zero) 
 			  b1("Fixed Effects Estimate" " ", margin(zero) bmargin(zero) height(1.2cm)  size(medlarge)) ///
 			  imargin(zero)
 
-graph export "${figure}\fig1_${date}.tif", replace width(3300) height(2700)
+graph export "${figure}/fig1_${date}.tif", replace width(3300) height(2700)
 
 ***********************************************************************************
 *** EXPORT SCATTER DATA FOR SI
@@ -477,4 +477,4 @@ replace pheno = "Subjective Well-Being" if pheno=="swb"
 order pheno
 sort pheno
 
-export excel using "${table}\tabS2_${date}.xlsx", firstrow(varlabels) replace keepcellfmt
+export excel using "${table}/tabS2_${date}.xlsx", firstrow(varlabels) replace keepcellfmt

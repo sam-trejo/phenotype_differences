@@ -1,5 +1,5 @@
 
-do "${syntax}\programs\bky2006.do"
+do "${syntax}/programs/bky2006.do"
 	
 ***********************************************************************************
 *** PANEL A 
@@ -30,7 +30,7 @@ twoway connect dna died, ///
 	   ytitle("Fraction Genotyped", size(vlarge)) ///  orientation(horizontal) 
        legend(order(1 "Graduates" 2 "Siblings") cols(1) position(9) ring(0) size(large)) /// 
 	   graphregion(margin(0 17 0 0)) ///
-	   saving("${figure}\temp\genotyping", replace) 		
+	   saving("${figure}/temp/genotyping", replace) 		
 
 ***********************************************************************************
 *** PANEL B
@@ -55,7 +55,7 @@ twoway hist diff_imp_span if dna_sib==0 & is_grad==1 & sib_died==1,  ///
 			ytitle("{it:N} Sibling Pairs", size(vlarge)) /// orientation(horizontal)
 			legend(order(1 "1x Genotype Sample" 2 "2x Genotype Sample") position(2) ring(0) size(medlarge) col(1) bmargin(0 0 0 0)) ///    rowgap(*.15)
 			graphregion(margin(0 17 0 0)) ///
-			saving("${figure}\temp\hist_span_diff", replace) 
+			saving("${figure}/temp/hist_span_diff", replace) 
 
 ***********************************************************************************
 *** PANEL C
@@ -143,7 +143,7 @@ order pheno b se pval qval qval2
 sort pval
 
 ***merge on measurement error multipliers
-merge 1:1 pheno using "${data}\me_mult_long_2024_01_05.dta", nogenerate keep(1 3)
+merge 1:1 pheno using "${data}/me_mult_long_2024_01_05.dta", nogenerate keep(1 3)
 
 ***generate disattenuated betas and ses
 gen b_mec = b * me_mult if qval<.1
@@ -239,25 +239,25 @@ twoway rcap high low n if qval<.1, ///
 		legend(off) ///
 		title("{bf:C.} Effects of Polygenic Scores on Lifespan", position(12) size(large)) ///		
 		graphregion(margin(0 0 2 2)) ///
-		saving("${figure}\temp\lifespan", replace)
+		saving("${figure}/temp/lifespan", replace)
 		
 ***********************************************************************************
 *** COMBINE PANELS A AND B, and then add PANEL C on the right
 ***********************************************************************************
 
 graph combine ///
-	  "${figure}\temp\genotyping.gph" ///
-	  "${figure}\temp\hist_span_diff.gph", ///
+	  "${figure}/temp/genotyping.gph" ///
+	  "${figure}/temp/hist_span_diff.gph", ///
 	  cols(1) ///
- 	  saving("${figure}\temp\selection", replace)
+ 	  saving("${figure}/temp/selection", replace)
 
 graph combine ///
-	  "${figure}\temp\selection.gph" ///
-	  "${figure}\temp\lifespan.gph", ///
+	  "${figure}/temp/selection.gph" ///
+	  "${figure}/temp/lifespan.gph", ///
 	  cols(2) ///
 	  graphregion(margin(zero))	
 		
-graph export "${figure}\fig2_${date}.tif", replace height(2700) width(3300)
+graph export "${figure}/fig2_${date}.tif", replace height(2700) width(3300)
 		
 ***********************************************************************************
 *** EXPORT BETA ESTIMATES FOR SI
@@ -283,4 +283,4 @@ keep pheno b se pval qval qval2 b_mec
 order pheno b se pval qval qval2 b_mec
 sort pheno
 
-export excel using "${table}\tabS3_${date}.xlsx", firstrow(varlabels) replace
+export excel using "${table}/tabS3_${date}.xlsx", firstrow(varlabels) replace

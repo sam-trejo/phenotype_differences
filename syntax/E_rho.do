@@ -139,4 +139,4 @@ foreach var of varlist pgi* {
 
 drop var*
 
-save "${data}\clean\phen_diff_rho_${date}.dta", replace
+save "${data}/clean/phen_diff_rho_${date}.dta", replace
