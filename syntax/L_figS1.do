@@ -35,7 +35,7 @@ foreach var of varlist pgi* {
 	local rho = `r(mean)'		
 	quietly reg res_diff_alive_by_75 x5_`var' if dna_sib==0
 	local b_pd = _b[x5_`var']
-	local adj = `b_pd'^2 * (1+`rho') / (1-`rho') / (2105)
+	local adj = `b_pd'^2 * (1+`rho')^2 / (2104)
 	local se_pd = (_se[x5_`var']^2 + `adj')^.5	
 	local p_pd = 2*ttail(e(df_r),abs(`b_pd'/`se_pd')) 
 	local n_pd = round(`e(N)',.001)
