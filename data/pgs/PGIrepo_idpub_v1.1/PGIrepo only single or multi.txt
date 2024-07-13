@@ -1,0 +1,33 @@
+The PGIs that have only multi-trait versions do so because the single-trait versions did not pass the expected predictive power > 1% criterion. 
+The PGIs that have only single-trait versions did not have any supplementary phenotypes with which they have a genetic correlation > 0.6
+
+Only single PGIs
+
+PGI_ACTIVITY-single
+PGI_BMI-single
+PGI_CANNABIS-single
+PGI_CPD-single
+PGI_EVERSMOKE-single
+PGI_HEIGHT-single
+PGI_MIGRAINE-single
+PGI_MORNING-single
+PGI_NARCIS-single
+PGI_NEARSIGHTED-single
+PGI_OPEN-single
+PGI_READING-single
+PGI_RELIGATT-single
+
+
+Only multi PGIs
+
+PGI_ALLERGYCAT-multi
+PGI_ALLERGYDUST-multi
+PGI_ALLERGYPOLLEN-multi
+PGI_COGEMP-multi
+PGI_COPD-multi
+PGI_DELAYDISC-multi
+PGI_FINSAT-multi
+PGI_LONELY-multi
+PGI_NEBmen-multi
+PGI_VOICEDEEP-multi
+PGI_WORKSAT-multi

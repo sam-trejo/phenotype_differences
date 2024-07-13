@@ -477,4 +477,4 @@ replace pheno = "Subjective Well-Being" if pheno=="swb"
 order pheno
 sort pheno
 
-export excel using "${table}/tabS2_${date}.xlsx", firstrow(varlabels) replace keepcellfmt
+export excel using "${table}/tabS4_${date}.xlsx", firstrow(varlabels) replace keepcellfmt

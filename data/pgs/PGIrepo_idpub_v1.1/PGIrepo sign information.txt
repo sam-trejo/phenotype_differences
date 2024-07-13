@@ -1,0 +1,3 @@
+The polygenic indices have a positive correlation with the corresponding phenotypes, i.e. the phenotype tends to be higher for higher values of the polygenic index. 
+
+The one exception is the Left Out of Social Activity PGI for which the correlation is negative.

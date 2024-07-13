@@ -283,4 +283,4 @@ keep pheno b se pval qval qval2 b_mec
 order pheno b se pval qval qval2 b_mec
 sort pheno
 
-export excel using "${table}/tabS3_${date}.xlsx", firstrow(varlabels) replace
+export excel using "${table}/tabS5_${date}.xlsx", firstrow(varlabels) replace
