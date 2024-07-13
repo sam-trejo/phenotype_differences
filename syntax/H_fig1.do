@@ -69,8 +69,8 @@ preserve
 	***customize clock positions so marker labels do not overlap 
 	gen pos = 3
 	replace pos = 2 if inlist(pheno, "asthma")
-	replace pos = 4 if inlist(pheno, "ever_smk", "phys_act")
-	replace pos = 9 if inlist(pheno, "drinks", "sat_fam", "copd", "health", "open", "birth", "sat_fin") // ,
+	replace pos = 4 if inlist(pheno, "ever_smk", "phys_act", "birth")
+	replace pos = 9 if inlist(pheno, "drinks", "sat_fam", "copd", "health", "open", "sat_fin") // ,
 	replace pos = 10 if inlist(pheno, "dep", "aer", "open", "sat_fam")
 	
 	/*
@@ -335,9 +335,9 @@ replace b_fe_ci_lo = -.09 if b_fe_ci_lo<-.09
 replace b_pd_ci_lo = -.09 if b_pd_ci_lo<-.09	
 
 gen pos = 3
-replace pos = 4 if inlist(pheno, "birth", "sat_fin", "swb", "sat_fam")
+replace pos = 4 if inlist(pheno, "birth", "swb", "sat_fam")
 replace pos = 9 if inlist(pheno, "relig", "copd", "cig_day")
-replace pos = 9 if inlist(pheno, "extra", "cog", "asthma", "open")
+replace pos = 9 if inlist(pheno, "extra", "cog", "asthma", "open", "sat_fin")
 replace pos = 9 if inlist(pheno, "ever_smk", "lonely")
 replace pos = 10 if inlist(pheno, "phys_act", "extra", "aer", "drinks")
 
