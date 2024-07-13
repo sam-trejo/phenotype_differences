@@ -121,7 +121,7 @@ restore
 *** 
 ***********************************************************************************	
 		
-esttab using "${table}/tabS-sd_${date}.tex", ///
+esttab using "${table}/tabS2_${date}.tex", ///
 			 cells("mean(fmt(a2))") ///
 			 noobs nonumber nodepvar label replace booktabs fragment ///
 			 collabels(none) ///

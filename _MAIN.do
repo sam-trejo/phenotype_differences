@@ -116,14 +116,14 @@ global full "${data}/clean/full_${date}.dta"
 ***********************************************************************************
 
 ***
-global enet = "NO" // NO tells the code to skip the elastic net regression (to save time) 
+global enet = "YES" // NO tells the code to skip the elastic net regression (to save time) 
 				   // YES tells the code to run the elastic net in "D_meta_PGI.do"
 
 ***
-global corr_reps = 10 // 1000
+global corr_reps = 1000
 
 ***
-global fig1C_reps = 10 // 1000
+global fig1C_reps = 1000
 
 ***********************************************************************************
 *** SET PGI PHENOTYPES NAMES GLOBALS
@@ -186,15 +186,14 @@ do "${syntax}/H_fig1.do"
 *** PGI on Lifespan (Figure 2)
 do "${syntax}/I_fig2.do"
 
-*** Construct Precision and Bias Figures
-rscript using "${syntax}/J_precision_plots.R"
-
-*** PGI on Survival to 75 Supplementary Figure
-do "$syntax/Z_tabS-alive75.do"
+*** SD Test Supplementary Table
+do "$syntax/J_tabS2.do"
 
 *** Rho Data to .xlsx
-do "$syntax/Z_tabS-rho.do"
+do "$syntax/K_tabS3.do"
 
-*** SD Test Supplementary Table
-do "$syntax/Z_tabS-sd.do"
+*** PGI on Survival to 75 Supplementary Figure
+do "$syntax/L_figS1.do"
 
+*** Construct Precision and Bias Figures
+rscript using "${syntax}/M_figS234.R"

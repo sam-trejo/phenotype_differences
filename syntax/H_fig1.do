@@ -125,7 +125,7 @@ preserve
 					|| ///
 		   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="bmi", color(ebblue%32) ///											
 		   text(-.1 .5 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///
-		   saving("${figure}/temp/scatter_drop_sibling", replace)
+		   saving("${figure}/temp/scatter_drop_sibling.gph", replace)
 
 	keep pheno b_pd se_pd
 	rename *pd *pd_PANELB		   
@@ -241,7 +241,7 @@ preserve
 					|| ///
 		   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="bmi", color(ebblue%32) ///						
 		   text(-.1 .5 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///
-		   saving("${figure}/temp/scatter_no_overlap", replace)			
+		   saving("${figure}/temp/scatter_no_overlap.gph", replace)			
 		   
 	keep pheno b_pd se_pd m_2g n_1g
 	rename *pd *pd_PANELC		   
@@ -384,7 +384,7 @@ twoway scatter b_pd b_fe, ///
 				|| ///
 	   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="bmi", color(ebblue%32) ///				
 	   text(-.1 .5 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///			
-	   saving("${figure}/temp/scatter_drop_sibling1000", replace) 	   
+	   saving("${figure}/temp/scatter_drop_sibling1000.gph", replace) 	   
 	   	   
 ***********************************************************************************
 *** COMBINE SCATTERS 

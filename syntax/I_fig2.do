@@ -30,7 +30,7 @@ twoway connect dna died, ///
 	   ytitle("Fraction Genotyped", size(vlarge)) ///  orientation(horizontal) 
        legend(order(1 "Graduates" 2 "Siblings") cols(1) position(9) ring(0) size(large)) /// 
 	   graphregion(margin(0 17 0 0)) ///
-	   saving("${figure}/temp/genotyping", replace) 		
+	   saving("${figure}/temp/genotyping.gph", replace) 		
 
 ***********************************************************************************
 *** PANEL B
@@ -55,7 +55,7 @@ twoway hist diff_imp_span if dna_sib==0 & is_grad==1 & sib_died==1,  ///
 			ytitle("{it:N} Sibling Pairs", size(vlarge)) /// orientation(horizontal)
 			legend(order(1 "1x Genotype Sample" 2 "2x Genotype Sample") position(2) ring(0) size(medlarge) col(1) bmargin(0 0 0 0)) ///    rowgap(*.15)
 			graphregion(margin(0 17 0 0)) ///
-			saving("${figure}/temp/hist_span_diff", replace) 
+			saving("${figure}/temp/hist_span_diff.gph", replace) 
 
 ***********************************************************************************
 *** PANEL C
@@ -239,7 +239,7 @@ twoway rcap high low n if qval<.1, ///
 		legend(off) ///
 		title("{bf:C.} Effects of Polygenic Scores on Lifespan", position(12) size(large)) ///		
 		graphregion(margin(0 0 2 2)) ///
-		saving("${figure}/temp/lifespan", replace)
+		saving("${figure}/temp/lifespan.gph", replace)
 		
 ***********************************************************************************
 *** COMBINE PANELS A AND B, and then add PANEL C on the right
@@ -249,7 +249,7 @@ graph combine ///
 	  "${figure}/temp/genotyping.gph" ///
 	  "${figure}/temp/hist_span_diff.gph", ///
 	  cols(1) ///
- 	  saving("${figure}/temp/selection", replace)
+ 	  saving("${figure}/temp/selection.gph", replace)
 
 graph combine ///
 	  "${figure}/temp/selection.gph" ///

@@ -186,7 +186,7 @@ twoway rcap high low n if qval<.1, ///
 		title("Effects of Polygenic Scores" "on Premature Mortality", position(12) size(large)) ///		
 		graphregion(margin(0 0 2 2))
 		
-graph export "${figure}/figS-lifespan_${date}.tif", replace height(3000) width(2400)
+graph export "${figure}/figS1_${date}.tif", replace height(3000) width(2400)
 		
 ***********************************************************************************
 *** 
@@ -206,5 +206,5 @@ keep pheno b se pval qval qval2 b_mec
 order pheno b se pval qval qval2 b_mec
 sort pheno
 
-export excel using "${table}/tabS-alive75_${date}.xlsx", firstrow(varlabels) replace
+export excel using "${table}/tabS6_${date}.xlsx", firstrow(varlabels) replace
 

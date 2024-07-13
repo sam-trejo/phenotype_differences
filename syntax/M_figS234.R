@@ -56,8 +56,8 @@ p2 <- ggplot(d2, aes(x = N_PD, y=N_FE, color=Phi)) +
   geom_line() +
   geom_abline(aes(intercept=0, slope=0.5), lty=2, alpha=0.4) +
   coord_cartesian(xlim = c(0,5000), ylim = c(0, 2500)) +
-  labs(x = 'N PD Sibling Pairs',
-       y = 'N FE Sibling Pairs',
+  labs(x = 'Number of PD Sibling Pairs (N)',
+       y = 'Number of FE Sibling Pairs (M)',
        title = 'FE Sample Size Required to Match PD Precision',
        color = expression(phi)) +
   scale_color_manual(values=c('0.01'='#37FF8B',
@@ -96,8 +96,8 @@ p3 <- d3 |>
                               'Educational Attainment'='#008BBC',
                               'Height'='#A06B9A',
                               'Self-Rated Health'='#F9ADA0')) +
-  labs(title=expression('Inflation of Standard Errors for PGSs'),
-       x=expression('N'~rho~'Sibling Pairs'),
+  labs(title=expression('Inflation of SEs for Various Polygenic Scores'),
+       x=expression('Number of Sibling Pairs (M)'),
        y='SE Inflation Factor') +
   ylim(c(1, 1.1)) +
   theme_minimal()
@@ -119,11 +119,11 @@ p4 <- d4 |>
   scale_color_manual(values=c('1.96'='#008BBC',
                               '2.58'='#A06B9A',
                               '3.29'='#F9ADA0')) +
-  labs(title=expression('Inflation of Standard Errors by t-Statistic'),
-       x=expression('N'~rho~'Sibling Pairs'),
+  labs(title=expression('Inflation of SEs by t-Statistic'),
+       x=expression('Number of Sibling Pairs (M)'),
        y='SE Inflation Factor',
        color=expression('t-Statistic for'~hat(beta)^PD),
-       lty=expression(rho)) +
+       lty=expression(hat(rho))) +
   ylim(c(1, 1.1)) +
   theme_minimal()
 
@@ -141,17 +141,17 @@ d5 <- data.frame(M= rep(100:M_max, 2),
 
 p5 <- ggplot(d5, aes(x = M, y = bias, color=as.factor(rho))) +
   geom_line() +
-  labs(x=expression('N'~rho~'Sibling Pairs'),
+  labs(x=expression('Number of Sibling Pairs (M)'),
        y = 'Bias',
-       title = expression('Bias in Estimates of'~beta^PD~'by'~phi~'and Sample Size'),
+       title = expression('Bias in'~hat(beta)^PD~'by'~rho~'and Sample Size'),
        color = expression(rho)) +
   scale_color_manual(values=c('0.5'='#008BBC',
                               '0.65'='#A06B9A')) +
   theme_minimal()
 
-ggsave('figures/phi-plots.png', comb1, height=6, width=10)
-ggsave('figures/rho-plots.png', comb2, height=6, width=10)
-ggsave('figures/bias-plot.png', p5, height=6, width=10)
+ggsave('figures/phi-plots_figS2.png', comb1, height=6, width=10)
+ggsave('figures/rho-plots_figS4.png', comb2, height=6, width=10)
+ggsave('figures/bias-plot_figS3.png', p5, height=6, width=10)
 
 
 
