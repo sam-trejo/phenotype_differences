@@ -69,21 +69,8 @@ rename p pval
 sort pval
 drop if pval==.
 
-tempfile hold
-save `hold', replace
-keep if pheno=="pgi_meta"
-tempfile meta
-save `meta', replace
-use `hold', clear
-
-drop if pheno=="pgi_meta"
 bky2006	
-
-append using `meta'
-rename qval qval2
-bky2006	
-
-order pheno b se pval qval qval2
+order pheno b se pval qval
 sort pval
 
 ***merge on measurement error multipliers
@@ -91,8 +78,8 @@ merge 1:1 pheno using "${data}/me_mult_long_2024_01_05.dta", nogenerate keep(1 3
 
 ***generate disattenuated betas and ses
 gen b_mec = b * me_mult if qval<.1
-keep pheno b se pval qval qval2 b_mec
-order pheno b se pval qval2 b_mec
+keep pheno b se pval qval b_mec
+order pheno b se pval b_mec
 sort b
 
 gen high = b + 1.96*se
@@ -141,7 +128,6 @@ replace pheno = "Religious Attendance" if pheno=="pgi_relig"
 replace pheno = "Self-Rated Health" if pheno=="pgi_health"
 replace pheno = "Self-Rated Math Ability" if pheno=="pgi_self_math"
 replace pheno = "Subjective Well-Being" if pheno=="pgi_swb"
-replace pheno = "Meta" if pheno=="pgi_meta"
 
 format high low b %03.2f
 
@@ -196,14 +182,13 @@ label var pheno "Polygenic Score"
 label var b "β Estimate (Outcome: Survive to Age 75)"
 label var se "Standard Error"
 label var pval "p-Value"
-label var qval "q-Value (including meta-PGS)"
-label var qval2 "q-Value (excluding meta-PGS)"
+label var qval "q-Value"
 label var b_mec "Disattenuated β Estimate "
 
 replace pheno = "Chronic Obstructive Pulmonary Disease" if pheno=="Chronic Obstructive Pulmonar."
 
-keep pheno b se pval qval qval2 b_mec
-order pheno b se pval qval qval2 b_mec
+keep pheno b se pval qval b_mec
+order pheno b se pval qval b_mec
 sort pheno
 
 export excel using "${table}/tabS6_${date}.xlsx", firstrow(varlabels) replace

@@ -15,7 +15,6 @@ center
 clear all
 set more off, perm
 set maxvar 30000
-set matsize 5000
 capture set trace off
 capture postutil close
 set scheme stcolor
@@ -118,14 +117,14 @@ global full "${data}/clean/full_${date}.dta"
 ***********************************************************************************
 
 ***
-global enet = "YES" // NO tells the code to skip the elastic net regression (to save time) 
+global enet = "NO" // NO tells the code to skip the elastic net regression (to save time) 
 				   // YES tells the code to run the elastic net in "D_meta_PGI.do"
 
 ***
-global corr_reps = 1000
+global corr_reps = 10
 
 ***
-global fig1C_reps = 1000
+global fig1C_reps = 10
 
 ***********************************************************************************
 *** SET PGI PHENOTYPES NAMES GLOBALS
@@ -159,25 +158,18 @@ global stub2 ///
 *** RUN DOFILES
 ***********************************************************************************
 
-global RSCRIPT_PATH ""
-
 *** Clean Phenotype Data
+global RSCRIPT_PATH ""
 rscript using "${syntax}/A_phenotypes.R"
 
 *** Clean Phenotype Data
 do "${syntax}/B_phenotypes.do"
 
+***Rho Estimation
+do "$syntax/C_rho.do"
+
 *** Begin Cleaning WLS Data & Auxillary Files
-do "${syntax}/C_clean_part_one.do"
-
-*** Run Elastic Net to Generate Meta-PGI
-do "${syntax}/D_meta_PGI.do"
-
-*** Bootstrap Within Family PGI Correlation
-do "$syntax/E_rho.do"
-
-*** Clean WLS Data and Merge Auxillary Files
-do "${syntax}/F_clean_part_two.do"
+do "${syntax}/D_clean.do"
 
 *** Descriptive Statistics Table
 do "${syntax}/G_tab1.do"
@@ -198,4 +190,5 @@ do "$syntax/K_tabS3.do"
 do "$syntax/L_figS1.do"
 
 *** Construct Precision and Bias Figures
+global RSCRIPT_PATH ""
 rscript using "${syntax}/M_figS234.R"

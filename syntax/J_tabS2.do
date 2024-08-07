@@ -4,10 +4,8 @@
 ***********************************************************************************
 
 use "${analytic}", clear
-
- robvar pgi_meta if dna, by(dead)
  
- local i=0
+local i=0
 foreach var of global stub2 {
 	quietly robvar pgi_`var' if dna, by(dead) 
 	local p=round(`r(p_w50)', .01)

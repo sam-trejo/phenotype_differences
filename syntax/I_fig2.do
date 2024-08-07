@@ -125,21 +125,8 @@ rename p pval
 sort pval
 drop if pval==.
 
-tempfile hold
-save `hold', replace
-keep if pheno=="pgi_meta"
-tempfile meta
-save `meta', replace
-use `hold', clear
-
-drop if pheno=="pgi_meta"
-bky2006	
-
-append using `meta'
-rename qval qval2
-bky2006	
-
-order pheno b se pval qval qval2
+bky2006
+order pheno b se pval qval
 sort pval
 
 ***merge on measurement error multipliers
@@ -147,8 +134,8 @@ merge 1:1 pheno using "${data}/me_mult_long_2024_01_05.dta", nogenerate keep(1 3
 
 ***generate disattenuated betas and ses
 gen b_mec = b * me_mult if qval<.1
-keep pheno b se pval qval qval2 b_mec
-order pheno b se pval qval2 b_mec
+keep pheno b se pval qval b_mec
+order pheno b se pval b_mec
 sort b
 
 gen high = b + 1.96*se
@@ -267,8 +254,7 @@ label var pheno "Polygenic Score"
 label var b "β Estimate (Outcome: Lifespan)"
 label var se "Standard Error"
 label var pval "p-Value"
-label var qval "q-Value (including meta-PGS)"
-label var qval2 "q-Value (excluding meta-PGS)"
+label var qval "q-Value"
 label var b_mec "Disattenuated β Estimate "
 
 replace pheno = "Asthma/Eczema/Rhinitis" if pheno=="Asthma/Eczema/Rhini."
@@ -279,8 +265,8 @@ replace pheno = "Religious Attendance" if pheno=="Religious Attend."
 replace pheno = "Self-Rated Health" if pheno=="{bf:Self-Rated Health}"
 replace pheno = "Meta" if pheno=="{bf:Meta}"
 
-keep pheno b se pval qval qval2 b_mec
-order pheno b se pval qval qval2 b_mec
+keep pheno b se pval qval b_mec
+order pheno b se pval qval b_mec
 sort pheno
 
 export excel using "${table}/tabS5_${date}.xlsx", firstrow(varlabels) replace
