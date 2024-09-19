@@ -117,10 +117,6 @@ global full "${data}/clean/full_${date}.dta"
 ***********************************************************************************
 
 ***
-global enet = "NO" // NO tells the code to skip the elastic net regression (to save time) 
-				   // YES tells the code to run the elastic net in "D_meta_PGI.do"
-
-***
 global corr_reps = 10
 
 ***
