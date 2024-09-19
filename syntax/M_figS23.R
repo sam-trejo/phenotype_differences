@@ -96,7 +96,7 @@ p3 <- d3 |>
                               'Educational Attainment'='#008BBC',
                               'Height'='#A06B9A',
                               'Self-Rated Health'='#F9ADA0')) +
-  labs(title=expression('Inflation of SEs for Various Polygenic Scores'),
+  labs(title=expression('Inflation of SEs for Various Polygenic Indices'),
        x=expression('Number of Sibling Pairs (M)'),
        y='SE Inflation Factor') +
   ylim(c(1, 1.1)) +
@@ -130,28 +130,8 @@ p4 <- d4 |>
 
 comb2 <- ggarrange(p4, p3, ncol=2, labels = c('[A]', '[B]'))
 
-
-M_max <- 5000
-
-d5 <- data.frame(M= rep(100:M_max, 2),
-                 rho = rep(c(0.5, 0.65), each=length(100:M_max))) |>
-  mutate(var = (1-rho^2)^2/(M-3)) |>
-  mutate(bias = (1-rho)^2/(var + (1-rho)^2))
-
-
-p5 <- ggplot(d5, aes(x = M, y = bias, color=as.factor(rho))) +
-  geom_line() +
-  labs(x=expression('Number of Sibling Pairs (M)'),
-       y = 'Bias',
-       title = expression('Bias in'~hat(beta)^PD~'by'~rho~'and Sample Size'),
-       color = expression(rho)) +
-  scale_color_manual(values=c('0.5'='#008BBC',
-                              '0.65'='#A06B9A')) +
-  theme_minimal()
-
 ggsave('figures/phi-plots_figS2.png', comb1, height=6, width=10)
 ggsave('figures/rho-plots_figS4.png', comb2, height=6, width=10)
-ggsave('figures/bias-plot_figS3.png', p5, height=6, width=10)
 
 
 
