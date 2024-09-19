@@ -1,4 +1,8 @@
+***********************************************************************************
+*** LOAD PROGRAMS
+***********************************************************************************
 
+do "${syntax}/programs/phendiff.do"
 do "${syntax}/programs/bky2006.do"
 	
 ***********************************************************************************
@@ -37,6 +41,15 @@ twoway connect dna died, ///
 ***********************************************************************************
 
 use "${analytic}", clear
+
+***create first differences of (imputed) lifespan
+foreach var of varlist imp_span { // pgi*
+	egen fam_n_`var'=count(`var'), by(idpub)
+	egen fam_mn_`var'=mean(`var'), by(idpub)
+	gen diff_`var'=(`var'-fam_mn_`var')*2
+	replace diff_`var'=. if fam_n_`var'!=2
+	drop fam_n_`var' fam_mn_`var'
+}
 
 ***histogram
 twoway hist diff_imp_span if dna_sib==0 & is_grad==1 & sib_died==1,  ///
@@ -79,7 +92,7 @@ foreach var of varlist pgi* {
 	
 	***run fixed effects regression
 	quietly reghdfe imp_span `var' ///
-					female c_born c_born2 female_c_born female_c_born2 ///
+					c_born c_born2 ///
 					if dna_sib==1, absorb(idpub) 
 	local b_fe = _b[`var']
 	local se_fe = _se[`var']
@@ -88,16 +101,16 @@ foreach var of varlist pgi* {
 	
 	***run phenotype differences regression
 	quietly sum rho_`var'
-	local rho = `r(mean)'	
-	quietly reg res_diff_imp_span x5_`var' if dna_sib==0
-	local b_pd = _b[x5_`var']
-	local adj = `b_pd'^2 * (1+`rho')^2 / (2104)
-	local se_pd = (_se[x5_`var']^2 + `adj')^.5	
-	local p_pd = 2*ttail(e(df_r),abs(`b_pd'/`se_pd')) 
-	local n_pd = round(`e(N)',.001)
+	quietly phendiff imp_span `var' ///
+			if dna_sib==0 ///
+			, fam(idpub) ///
+			rho(`r(mean)') ///
+			delta(2104) ///
+			res(c_born c_born2)
+	local p_pd = 2*ttail(e(df_r),abs(`r(beta)'/`r(se)')) 
 
 	***output regression coefficients to a matrix
-	mat betas = nullmat(betas) \ `b_fe', `se_fe', `p_fe', `n_fe', `b_pd', `se_pd', `p_pd', `n_pd'
+	mat betas = nullmat(betas) \ `b_fe', `se_fe', `p_fe', `n_fe', `r(beta)', `r(se)', `p_pd', `r(n)'
 }			
 
 ***name rows and columns of regression coefficient matrix
@@ -224,7 +237,7 @@ twoway rcap high low n if qval<.1, ///
 		xtitle("Lifespan (Years)", size(medlarge)) ///
 		ytitle("") ///
 		legend(off) ///
-		title("{bf:C.} Effects of Polygenic Scores on Lifespan", position(12) size(large)) ///		
+		title("{bf:C.} Effects of Polygenic Indices on Lifespan", position(12) size(large)) ///		
 		graphregion(margin(0 0 2 2)) ///
 		saving("${figure}/temp/lifespan.gph", replace)
 		
@@ -250,7 +263,7 @@ graph export "${figure}/fig2_${date}.tif", replace height(2700) width(3300)
 *** EXPORT BETA ESTIMATES FOR SI
 ***********************************************************************************
 
-label var pheno "Polygenic Score"
+label var pheno "Polygenic Index"
 label var b "β Estimate (Outcome: Lifespan)"
 label var se "Standard Error"
 label var pval "p-Value"

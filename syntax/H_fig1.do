@@ -1,14 +1,15 @@
 ***********************************************************************************
-*** 
+*** LOAD PROGRAMS
 ***********************************************************************************
 
-set seed 19146
-
-use "${analytic}", clear
+do "${syntax}/programs/phendiff.do"
+do "${syntax}/programs/bky2006.do"
 
 ***********************************************************************************
 *** PANEL B: ONE RANDOM SIBLING SAMPLE (SINGLE REP)
 ***********************************************************************************
+
+use "${analytic}", clear
 
 matrix drop _all
 
@@ -27,22 +28,20 @@ preserve
 		global rowname "$rowname `var'"
 
 		quietly reghdfe out_`var' pgi_`var' ///
-						diff_female diff_c_born diff_c_born2 diff_female_c_born diff_female_c_born2 ///
-						if dna_sib==1, absorb(idpub)
+						if dna_sib==1 ///
+						, absorb(idpub)
 		local b_fe = _b[pgi_`var']
 		local se_fe = _se[pgi_`var']
 		
+		replace pgi_`var'=. if focal==0		
 		quietly sum rho_pgi_`var'
-		local rho = `r(mean)'
-		quietly reg diff_out_`var' ///
-					diff_female diff_c_born diff_c_born2 diff_female_c_born diff_female_c_born2 ///
-					if dna_sib==1 & focal==1
-		predict res_diff_out_`var' if e(sample), residuals
-		quietly reg res_diff_out_`var' x5_pgi_`var' if dna_sib==1 & focal==1
-		local b_pd = _b[x5_pgi_`var']
-		local adj = `b_pd'^2 * (1+`rho')^2 / (2104)
-		local se_pd = (_se[x5_pgi_`var']^2 + `adj')^.5
-		mat betas = nullmat(betas) \ `b_fe', `se_fe', `b_pd', `se_pd'
+		quietly phendiff out_`var' pgi_`var' ///
+				 if dna_sib==1 ///
+				 , fam(idpub) ///
+				 rho(`r(mean)') ///
+				 delta(2104)
+		
+		mat betas = nullmat(betas) \ `b_fe', `se_fe', `r(beta)', `r(se)'
 	}			
 
 	mat rownames betas = $rowname			
@@ -151,25 +150,20 @@ preserve
 		global rowname "$rowname `var'"
 
 		quietly reghdfe out_`var' pgi_`var' ///
-						diff_female diff_c_born diff_c_born2 diff_female_c_born diff_female_c_born2 ///
-						if dna_sib==1, absorb(idpub)
+						if dna_sib==1 ///
+						, absorb(idpub)
 		local b_fe = _b[pgi_`var']
 		local se_fe = _se[pgi_`var']
 		local m_2g =  `e(N)'/2
 		
 		quietly sum rho_pgi_`var'
-		local rho = `r(mean)'		
-		quietly reg diff_out_`var' ///
-					diff_female diff_c_born diff_c_born2 diff_female_c_born diff_female_c_born2 ///
-					if dna_sib==0
-		predict res_diff_out_`var' if e(sample), residuals
-		quietly reg res_diff_out_`var' x5_pgi_`var' if dna_sib==0
-		local b_pd = _b[x5_pgi_`var']
-		local adj = `b_pd'^2 * (1+`rho')^2 / (2104)
-		local se_pd = (_se[x5_pgi_`var']^2 + `adj')^.5
-		local n_1g =  `e(N)'
+		quietly phendiff out_`var' pgi_`var' ///
+				 if dna_sib==0 ///
+				 , fam(idpub) ///
+				 rho(`r(mean)') ///
+				 delta(2104)
 		
-		mat betas = nullmat(betas) \ `b_fe', `se_fe', `b_pd', `se_pd', `m_2g', `n_1g'
+		mat betas = nullmat(betas) \ `b_fe', `se_fe', `r(beta)', `r(se)', `m_2g', `r(n)'		
 	}			
 
 	mat rownames betas = $rowname			
@@ -267,12 +261,11 @@ foreach var of global stub {
 	global rowname "$rowname `var'"
 
 	quietly reghdfe out_`var' pgi_`var' ///
-					diff_female diff_c_born diff_c_born2 diff_female_c_born diff_female_c_born2 ///
 					if dna_sib==1, absorb(idpub)
 	local b_fe = _b[pgi_`var']
 	local se_fe = _se[pgi_`var']
 		
-	forval i=1/${fig1C_reps} {
+	forval i = 1/${fig1C_reps} {
 		preserve
 			quietly {
 				***randomly select a focal sib
@@ -282,17 +275,16 @@ foreach var of global stub {
 				drop rand fam_mn_rand
 				
 				***
+				replace pgi_`var'=. if focal==0		
 				quietly sum rho_pgi_`var'
-				local rho = `r(mean)'
-				quietly reg diff_out_`var' ///
-							diff_female diff_c_born diff_c_born2 diff_female_c_born diff_female_c_born2 ///
-							if dna_sib==1 & focal==1
-				predict res_diff_out_`var' if e(sample), residuals
-				quietly reg res_diff_out_`var' x5_pgi_`var' if dna_sib==1 & focal==1				
-				local b=_b[x]
-				local adj = `b_pd'^2 * (1+`rho')^2 / (2104)
-				local se2 = (_se[x5_pgi_`var']^2 + `adj')				
-				matrix `var'=nullmat(`var') \ `b', `se2' 
+				quietly phendiff out_`var' pgi_`var' ///
+						 if dna_sib==1 ///
+						 , fam(idpub) ///
+						 rho(`r(mean)') ///
+						 delta(2104)
+				local se2 = (`r(se)')^2				
+				matrix `var' = nullmat(`var') \ `r(beta)', `se2' 
+				
 			}
 		restore	
 	}

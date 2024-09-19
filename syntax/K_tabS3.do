@@ -32,7 +32,7 @@ bky2006
 order pheno rho se_rho pval qval
 
 ***label columns
-label var pheno "Polygenic Score"
+label var pheno "Polygenic Index"
 label var rho_pgi "ρ(g1j,g2j)"
 label var se_rho_pgi "Standard Error"
 label var pval "p-Value"
