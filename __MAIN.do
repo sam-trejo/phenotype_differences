@@ -187,4 +187,4 @@ do "$syntax/L_figS1.do"
 
 *** Construct Precision and Bias Figures
 global RSCRIPT_PATH ""
-rscript using "${syntax}/M_figS234.R"
+rscript using "${syntax}/M_figS23.R"
