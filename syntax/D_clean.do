@@ -202,64 +202,22 @@ rename pgi_selfmathmulti pgi_self_math
 rename pgi_voicedeepmulti pgi_deep	  
 
 ***********************************************************************************
-*** FIRST DIFFERENCES WITHIN TRANSORMATION ON OUTCOME VARIABLES
-***********************************************************************************
-
-***phenotypes
-foreach var of global stub {
-	***generate family N and mean of variable
-	egen fam_n_`var'=count(out_`var'), by(idpub)
-	egen fam_mn_`var'=mean(out_`var'), by(idpub)
-	
-	***generate phenotype difference variable
-	gen diff_out_`var'=(out_`var'-fam_mn_`var')*2
-	
-	***set phenotype difference as missing if there's only one value in a family
-	replace diff_out_`var'=. if fam_n_`var'!=2
-
-	***drop extra variables
-	drop fam_n_`var' fam_mn_`var'
-}
-
-*** mortality outcomes & covariates
-foreach var of varlist female* c_born* imp_span alive_by_* { // pgi*
-	egen fam_n_`var'=count(`var'), by(idpub)
-	egen fam_mn_`var'=mean(`var'), by(idpub)
-
-	gen diff_`var'=(`var'-fam_mn_`var')*2
-
-	replace diff_`var'=. if fam_n_`var'!=2
-
-	drop fam_n_`var' fam_mn_`var'
-}
-
-***********************************************************************************
-*** RESIDUALIZE SIBLING OUTCOME DIFFERENCES ON COVARIATE DIFFERENCES
-***********************************************************************************
-
-***mortality outcomes
-foreach var of varlist diff_imp_span diff_alive_by* {
-	reg `var' diff_female diff_c_born diff_c_born2 diff_female_c_born diff_female_c_born2 if dna_sib==0
-	predict res_`var' if e(sample), residuals
-}
-
-***********************************************************************************
 *** RESTRICT AND SAVE OUT DATA
 ***********************************************************************************
 
 ***keep only relevant variables
 keep individ familypub personid idpub rtype is_grad is_sib dna* srel* /// id vars
-	 *died *dead age2020 span imp_span res_diff_imp_span alive* res_diff_alive* /// death vars
+	 *died *dead age2020 span imp_span alive* /// death vars
 	 female* born c_born c_born2 /// covariates vars
-	 ses57 pop57 /// milwaukee57 farm57  lnparinc57_mi parocc57_mi daded momed ocf357 pi5760
-	 *out* pgi* diff* // res*  pc*
+	 *out* *pgi* /// res* pc*  
+	 // ses57 pop57  milwaukee57 farm57  lnparinc57_mi parocc57_mi daded momed ocf357 pi5760
 	 
 ***order variables
 order individ familypub personid idpub rtype is_grad is_sib dna* srel* /// id vars
-	  *died *dead age2020 span imp_span res_diff_imp_span alive* res_diff_alive* /// death vars
+	  *died *dead age2020 span imp_span alive* /// death vars
 	  female* born c_born c_born2 /// covariates vars
-	  ses57 pop57 /// milwaukee57 farm57  lnparinc57_mi parocc57_mi daded momed ocf357 pi5760
-	  *out* *pgi* diff* //  res*  pc*  
+	  *out* *pgi* /// res* pc*  
+	  // ses57 pop57  milwaukee57 farm57  lnparinc57_mi parocc57_mi daded momed ocf357 pi5760
 	 
 ***********************************************************************************
 *** MERGE ON RHO DATA
@@ -272,14 +230,6 @@ foreach var of varlist rho* se_rho* {
 	display "`var'"
 	sum `var'
 	replace `var' = `r(mean)'
-}
-
-***********************************************************************************
-*** GENERATE RHO-TRANSFORMED PGI FOR PHENOTYPE DIFFERENCES
-***********************************************************************************
-
-foreach var of varlist pgi* {
-	gen x5_`var'=(1 - rho_`var')*`var'
 }
 
 ***********************************************************************************
