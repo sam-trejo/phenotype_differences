@@ -13,7 +13,8 @@ library(haven)
 library(dplyr)
 library(tidyr)
 
-#setwd('~/projects/phen-diff/data')
+pwd()
+setwd('..')
 
 # idpub + rytpe or familypub + personid uniquely identify
 d <- read_dta('./data/wls/wls_bl_14.03.stata/wls_bl_14_03.dta') |>
