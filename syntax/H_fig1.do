@@ -2,6 +2,7 @@
 *** LOAD PROGRAMS
 ***********************************************************************************
 
+set seed 19146
 do "${syntax}/programs/phendiff.do"
 do "${syntax}/programs/bky2006.do"
 
@@ -67,10 +68,9 @@ preserve
 
 	***customize clock positions so marker labels do not overlap 
 	gen pos = 3
-	replace pos = 2 if inlist(pheno, "asthma")
-	replace pos = 4 if inlist(pheno, "ever_smk", "phys_act", "birth")
-	replace pos = 9 if inlist(pheno, "drinks", "sat_fam", "copd", "health", "open", "sat_fin") // ,
-	replace pos = 10 if inlist(pheno, "dep", "aer", "open", "sat_fam")
+	replace pos = 4 if inlist(pheno, "ever_smk", "phys_act", "extra", "copd", "aer")
+	replace pos = 9 if inlist(pheno, "drinks", "sat_fam", "health", "open", "birth", "hgt", "dep") // ,
+	replace pos = 10 if inlist(pheno, "sat_job")
 	
 	/*
 	replace pos = 5 if inlist(pheno,"health")
@@ -89,7 +89,7 @@ preserve
 	local slope = round(_b[b_fe], .001)
 	local slope : display %03.2f `slope'
 	local lo = -.1/`slope'
-	local hi = .7/`slope'
+	local hi = .4/`slope'
 
 	format b_pd b_fe %02.1f
 	
@@ -102,30 +102,30 @@ preserve
 					xline(0, lcolor(black) lpattern(solid)) ///
 					yline(0, lcolor(black) lpattern(solid)) ///
 					legend(off) ///
-					xscale(range(-.1 .7) lstyle(none)) ///
-					yscale(range(-.1 .7) lstyle(none)) ///
+					xscale(range(-.1 .4) lstyle(none)) ///
+					yscale(range(-.1 .4) lstyle(none)) ///
 					title(" " "{bf:B.}" "50% Two Genotype" "Sample", position(12) size(large)) ///	
 					subtitle("[1 Rep]" " ", position(12) size(medium)) ///			
 					xtitle(" ") ///				
 					graphregion(margin(-1 -1 -1 -1)) ///
 					plotregion(margin(-1 3 -1 -1)) ///
-					ylabel(-.1(.2).7, labcolor(white) labsize(medlarge) notick) ///
-					xlabel(-.1(.2).7, labsize(medlarge) notick) ///	
+					ylabel(-.1(.1).4, labcolor(white) labsize(medlarge) notick) ///
+					xlabel(-.1(.1).4, labsize(medlarge) notick) ///	
 					|| ///
 		   scatter b_pd b_fe, ///
 					mfcolor(none) mlcolor(none) ///
 					mlabel(pheno) mlabcolor(ebblue) mlabvposition(pos) mlabsize(small) mlabangle(315) mlabgap(tiny) ///
 					|| ///
 		   function y=x, ///
-					range(-.1 .7) lpattern(dash) lcolor(black) ///
+					range(-.1 .4) lpattern(dash) lcolor(black) ///
 					|| ///
 		   function y = `slope' * x, ///
-					range(`lo' `hi') lcolor(maroon%50) ///
+					range(-.1 .4) lcolor(maroon%50) ///
 					|| ///					
-		   rcap b_fe_ci_lo b_fe_ci_hi b_pd if pheno=="bmi", horizontal color(ebblue%32) ///
+		   rcap b_fe_ci_lo b_fe_ci_hi b_pd if pheno=="cog", horizontal color(ebblue%32) ///
 					|| ///
-		   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="bmi", color(ebblue%32) ///											
-		   text(-.1 .5 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///
+		   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="cog", color(ebblue%32) ///											
+		   text(-.06 .3 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///
 		   saving("${figure}/temp/scatter_drop_sibling.gph", replace)
 
 	keep pheno b_pd se_pd
@@ -187,10 +187,11 @@ preserve
 	replace b_pd_ci_lo = -.09 if b_pd_ci_lo<-.09	
 	
 	gen pos = 3
-	replace pos = 4 if inlist(pheno, "birth", "swb", "open", "health")
-	replace pos = 9 if inlist(pheno, "sat_fin", "sat_fam", "drinks", "phys_act", "cig_day", "copd", "asthma")
+	replace pos = 2 if inlist(pheno, "neuro", "copd")
+	replace pos = 4 if inlist(pheno, "swb", "open", "health")
+	replace pos = 9 if inlist(pheno, "drinks", "phys_act", "cig_day", "asthma", "cog")
 	replace pos = 9 if inlist(pheno, "dep")	
-	replace pos = 10 if inlist(pheno, "relig")
+	replace pos = 10 if inlist(pheno, "relig", "sat_fin", "sat_fam")
 	
 	corr b_pd b_fe
 	local rho = round(`r(rho)', .001)	
@@ -200,7 +201,7 @@ preserve
 	local slope = round(_b[b_fe], .001)
 	local slope : display %03.2f `slope'
 	local lo = -.1/`slope'
-	local hi = .7/`slope'
+	local hi = .4/`slope'
 
 	format b_pd b_fe %02.1f	
 	
@@ -213,30 +214,30 @@ preserve
 					xline(0, lcolor(black) lpattern(solid)) ///
 					yline(0, lcolor(black) lpattern(solid)) ///
 					legend(off) ///
-					xscale(range(-.1 .7) lstyle(none)) ///
-					yscale(range(-.1 .7) lstyle(none)) ///
+					xscale(range(-.1 .4) lstyle(none)) ///
+					yscale(range(-.1 .4) lstyle(none)) ///
 					title(" " "{bf:C.}" "One Genotype" "Sample", position(12) size(large)) ///		
 					subtitle(" " " ", position(12) size(medium)) ///								
 					xtitle(" ") ///			
 					graphregion(margin(-1 -1 -1 -1)) ///
 					plotregion(margin(-1 -1 -1 -1)) ///
-					ylabel(-.1(.2).7, labcolor(white) labsize(medlarge) notick) ///
-					xlabel(-.1(.2).7, labsize(medlarge) notick) ///								
+					ylabel(-.1(.1).4, labcolor(white) labsize(medlarge) notick) ///
+					xlabel(-.1(.1).4, labsize(medlarge) notick) ///								
 					|| ///
 		   scatter b_pd b_fe, ///
 					mfcolor(none) mlcolor(none) ///
 					mlabel(pheno) mlabcolor(ebblue) mlabvposition(pos) mlabsize(small) mlabangle(315) mlabgap(tiny) ///
 					|| ///
 		   function y = x, ///
-					range(-.1 .7) lpattern(dash) lcolor(black) ///
+					range(-.1 .4) lpattern(dash) lcolor(black) ///
 					|| ///
 		   function y = `slope' * x, ///
 					range(`lo' `hi') lcolor(maroon%50) ///		
 					|| ///					
-		   rcap b_fe_ci_lo b_fe_ci_hi b_pd if pheno=="bmi", horizontal color(ebblue%32) ///
+		   rcap b_fe_ci_lo b_fe_ci_hi b_pd if pheno=="cog", horizontal color(ebblue%32) ///
 					|| ///
-		   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="bmi", color(ebblue%32) ///						
-		   text(-.1 .5 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///
+		   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="cog", color(ebblue%32) ///						
+		   text(-.06 .3 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///
 		   saving("${figure}/temp/scatter_no_overlap.gph", replace)			
 		   
 	keep pheno b_pd se_pd m_2g n_1g
@@ -327,11 +328,12 @@ replace b_fe_ci_lo = -.09 if b_fe_ci_lo<-.09
 replace b_pd_ci_lo = -.09 if b_pd_ci_lo<-.09	
 
 gen pos = 3
-replace pos = 4 if inlist(pheno, "birth", "swb", "sat_fam")
-replace pos = 9 if inlist(pheno, "relig", "copd", "cig_day")
-replace pos = 9 if inlist(pheno, "extra", "cog", "asthma", "open", "sat_fin")
-replace pos = 9 if inlist(pheno, "ever_smk", "lonely")
-replace pos = 10 if inlist(pheno, "phys_act", "extra", "aer", "drinks")
+replace pos = 4 if inlist(pheno, "birth", "lonely", "sat_fam")
+replace pos = 8 if inlist(pheno, "open")
+replace pos = 9 if inlist(pheno, "cog", "asthma", "copd", "sat_fin")
+replace pos = 9 if inlist(pheno, "ever_smk", "hgt")
+replace pos = 10 if inlist(pheno, "phys_act", "drinks", "alcoh")
+replace pos = 11 if inlist(pheno, "aer")
 
 corr b_pd b_fe
 local rho = round(`r(rho)', .001)
@@ -341,7 +343,7 @@ regress b_pd b_fe
 local slope = round(_b[b_fe], .001)
 local slope : display %03.2f `slope'
 local lo = -.1/`slope'
-local hi = .7/`slope'
+local hi = .4/`slope'
 
 format b_pd b_fe %02.1f
 
@@ -354,30 +356,30 @@ twoway scatter b_pd b_fe, ///
 				xline(0, lcolor(black) lpattern(solid)) ///
 				yline(0, lcolor(black) lpattern(solid)) ///
 				legend(off) ///
-				xscale(range(-.1 .7) lstyle(none)) ///
-				yscale(range(-.1 .7) lstyle(none)) ///
+				xscale(range(-.1 .4) lstyle(none)) ///
+				yscale(range(-.1 .4) lstyle(none)) ///
 				title(" " "{bf:A.}" "50% Two Genotype" "Sample", position(12) size(large)) ///			
 				subtitle("[1000 Reps]" " ", position(12) size(medium)) ///							
 				xtitle(" ") ///				
 				graphregion(margin(-1 -1 -1 -1)) ///
 				plotregion(margin(-1 3 -1 -1)) ///
-				ylabel(-.1(.2).7, labsize(medlarge) notick) ///							
-				xlabel(-.1(.2).7, labsize(medlarge) notick) ///				
+				ylabel(-.1(.1).4, labsize(medlarge) notick) ///							
+				xlabel(-.1(.1).4, labsize(medlarge) notick) ///				
 				|| ///
 	   scatter b_pd b_fe, ///
 				mfcolor(none) mlcolor(none) ///
 				mlabel(pheno) mlabcolor(ebblue) mlabvposition(pos) mlabsize(small) mlabangle(315) mlabgap(tiny) ///
 				|| ///
 	   function y=x, ///
-				range(-.1 .7) lpattern(dash) lcolor(black) ///
+				range(-.1 .4) lpattern(dash) lcolor(black) ///
 				|| ///
 	   function y = `slope' * x, ///
-				range(-.1 .7) lcolor(maroon%50) ///
+				range(-.1 .4) lcolor(maroon%50) ///
 				|| ///					
-	   rcap b_fe_ci_lo b_fe_ci_hi b_pd if pheno=="bmi", horizontal color(ebblue%32) ///
+	   rcap b_fe_ci_lo b_fe_ci_hi b_pd if pheno=="cog", horizontal color(ebblue%32) ///
 				|| ///
-	   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="bmi", color(ebblue%32) ///				
-	   text(-.1 .5 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///			
+	   rcap b_pd_ci_lo b_pd_ci_hi b_fe if pheno=="cog", color(ebblue%32) ///				
+	   text(-.06 .3 "{it:r} = `rho'" "β = `slope'", size(medlarge)) ///			
 	   saving("${figure}/temp/scatter_drop_sibling1000.gph", replace) 	   
 	   	   
 ***********************************************************************************
@@ -391,7 +393,7 @@ graph combine "${figure}/temp/scatter_drop_sibling1000.gph" ///
 			  col(3) ///
 			  l1("Phenotype Differences Estimate             ", size(medlarge)  margin(0 0 0 0) bmargin(0 0 0 0) ) /// margin(zero) bmargin(zero) 
 			  b1("Fixed Effects Estimate" " ", margin(zero) bmargin(zero) height(1.2cm)  size(medlarge)) ///
-			  imargin(zero)
+			  imargin(0 .5 0 0)
 
 graph export "${figure}/fig1_${date}.tif", replace width(3300) height(2700)
 
