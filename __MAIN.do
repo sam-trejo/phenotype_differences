@@ -19,7 +19,7 @@ capture set trace off
 capture postutil close
 set scheme stcolor
 graph set window fontface "Calibri Light"
-set seed 27203
+set seed 19146
 
 ***********************************************************************************
 *** SET DIRECTORY GLOBALS
@@ -117,10 +117,10 @@ global full "${data}/clean/full_${date}.dta"
 ***********************************************************************************
 
 ***
-global corr_reps = 10
+global corr_reps = 1000
 
 ***
-global fig1C_reps = 10
+global fig1C_reps = 1000
 
 ***********************************************************************************
 *** SET PGI PHENOTYPES NAMES GLOBALS

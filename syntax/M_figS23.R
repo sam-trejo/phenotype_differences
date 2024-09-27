@@ -131,7 +131,7 @@ p4 <- d4 |>
 comb2 <- ggarrange(p4, p3, ncol=2, labels = c('[A]', '[B]'))
 
 ggsave('figures/phi-plots_figS2.png', comb1, height=6, width=10)
-ggsave('figures/rho-plots_figS4.png', comb2, height=6, width=10)
+ggsave('figures/rho-plots_figS3.png', comb2, height=6, width=10)
 
 
 
